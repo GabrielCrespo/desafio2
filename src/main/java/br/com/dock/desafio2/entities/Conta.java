@@ -1,10 +1,12 @@
 package br.com.dock.desafio2.entities;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -14,24 +16,37 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import br.com.dock.desafio2.enums.TipoConta;
+
 @Entity
 @Table(name = "contas")
-public class Conta {
+public class Conta implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long idConta;
-	
+
+	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name = "idPessoa", referencedColumnName = "idPessoa")
 	private Pessoa idPessoa;
-	
+
+	@Column(precision = 10, scale = 2)
 	private BigDecimal saldo;
+
+	@Column(precision = 10, scale = 2)
 	private BigDecimal limiteSaqueDiario;
-	private Boolean flagAtivo;
-	private Long tipoConta;
-	private Date dataCriacao;
 	
+	@Column(columnDefinition = "boolean default false")
+	private Boolean flagAtivo;
+	
+	private TipoConta tipoConta;
+	private Date dataCriacao;
+
 	@OneToMany(mappedBy = "idTransacao")
 	private List<Transacao> transacoes = new ArrayList<Transacao>();
 
@@ -40,7 +55,7 @@ public class Conta {
 	}
 
 	public Conta(Long idConta, Pessoa idPessoa, BigDecimal saldo, BigDecimal limiteSaqueDiario, Boolean flagAtivo,
-			Long tipoConta, Date dataCriacao) {
+			TipoConta tipoConta, Date dataCriacao) {
 		this.idConta = idConta;
 		this.idPessoa = idPessoa;
 		this.saldo = saldo;
@@ -56,6 +71,10 @@ public class Conta {
 
 	public Pessoa getIdPessoa() {
 		return idPessoa;
+	}
+	
+	public void setIdPessoa(Pessoa idPessoa) {
+		this.idPessoa = idPessoa;
 	}
 
 	public BigDecimal getSaldo() {
@@ -82,11 +101,11 @@ public class Conta {
 		this.flagAtivo = flagAtivo;
 	}
 
-	public Long getTipoConta() {
+	public TipoConta getTipoConta() {
 		return tipoConta;
 	}
 
-	public void setTipoConta(Long tipoConta) {
+	public void setTipoConta(TipoConta tipoConta) {
 		this.tipoConta = tipoConta;
 	}
 

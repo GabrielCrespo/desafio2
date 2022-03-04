@@ -1,5 +1,6 @@
 package br.com.dock.desafio2.entities;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -11,9 +12,13 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "pessoas")
-public class Pessoa {
+public class Pessoa implements Serializable {
+
+	private static final long serialVersionUID = 2L;
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,6 +27,7 @@ public class Pessoa {
 	private String cpf;
 	private Date dataNascimento;
 	
+	@JsonIgnore
 	@OneToMany(mappedBy = "idPessoa")
 	private List<Conta> contas = new ArrayList<Conta>();
 
@@ -65,6 +71,12 @@ public class Pessoa {
 
 	public List<Conta> getContas() {
 		return contas;
+	}
+
+	@Override
+	public String toString() {
+		return "Pessoa [idPessoa=" + idPessoa + ", nome=" + nome + ", cpf=" + cpf + ", dataNascimento=" + dataNascimento
+				+ ", contas=" + contas + "]";
 	}
 	
 }

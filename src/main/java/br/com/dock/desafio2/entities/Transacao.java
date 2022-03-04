@@ -3,6 +3,7 @@ package br.com.dock.desafio2.entities;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -22,7 +23,10 @@ public class Transacao {
 	@ManyToOne
 	@JoinColumn(name = "idConta", referencedColumnName = "idConta")
 	private Conta conta;
+	
+	@Column(precision = 10, scale = 2, nullable = false)
 	private BigDecimal valor;
+	
 	private Date data;
 	
 	public Transacao() {
