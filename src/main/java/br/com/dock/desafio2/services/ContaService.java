@@ -32,7 +32,8 @@ public class ContaService {
 
 	public ContaDTO create(ContaDTO dto) {
 
-		Pessoa pessoa = pessoaRepository.findById(dto.getPessoa().getIdPessoa()).get();
+		Optional<Pessoa> obj = pessoaRepository.findById(dto.getPessoa().getIdPessoa());
+		Pessoa pessoa = obj.orElseThrow(() -> new EntityNotFoundException("Pessoa não encontrada!"));
 
 		Conta conta = new Conta();
 		conta.setDataCriacao(new Date());
