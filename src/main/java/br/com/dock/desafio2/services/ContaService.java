@@ -19,6 +19,7 @@ import br.com.dock.desafio2.repositories.ContaRepository;
 import br.com.dock.desafio2.repositories.PessoaRepository;
 import br.com.dock.desafio2.repositories.TransacaoRepository;
 import br.com.dock.desafio2.services.exceptions.BlockedAccountException;
+import br.com.dock.desafio2.services.exceptions.DailyWithdrawLimitException;
 import br.com.dock.desafio2.services.exceptions.EntityNotFoundException;
 import br.com.dock.desafio2.services.exceptions.WithdrawNotAllowedException;
 
@@ -108,6 +109,10 @@ public class ContaService {
 
 		if (conta.getSaldo().compareTo(dto.getValor()) == -1) {
 			throw new WithdrawNotAllowedException("Saldo insuficiente");
+		}
+		
+		if(conta.getSaldo().compareTo(dto.getValor()) == 1) {
+			throw new DailyWithdrawLimitException("Não é possível sacar mais do que o limite diário permitido");
 		}
 
 		BigDecimal novoSaldo = conta.getSaldo().subtract(dto.getValor());

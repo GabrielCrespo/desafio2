@@ -1,10 +1,10 @@
 package br.com.dock.desafio2.services.exceptions;
 
-public class AccountTypeNotFound extends RuntimeException {
+public class DailyWithdrawLimitException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
 	
-	public AccountTypeNotFound(String message) {
+	public DailyWithdrawLimitException(String message) {
 		super(message);
 	}
 
