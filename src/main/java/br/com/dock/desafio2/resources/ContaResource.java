@@ -73,6 +73,12 @@ public class ContaResource {
 		return ResponseEntity.ok().body(contaDto);
 	}
 	
+	@PutMapping(value = "/desbloquear/{id}")
+	public ResponseEntity<ContaDTO> desbloquear(@PathVariable Long id) {
+		ContaDTO contaDto = service.desbloquearConta(id);
+		return ResponseEntity.ok().body(contaDto);
+	}
+	
 	@GetMapping(value = "/consultar-transacoes/{id}")
 	public ResponseEntity<List<Transacao>> BuscarTransacoes(@PathVariable Long id){
 		List<Transacao> transacoes = service.buscarTransacoes(id);

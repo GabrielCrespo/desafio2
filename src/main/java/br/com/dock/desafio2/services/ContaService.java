@@ -5,10 +5,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import br.com.dock.desafio2.dto.ContaDTO;
 import br.com.dock.desafio2.dto.ValorDTO;
@@ -18,6 +18,7 @@ import br.com.dock.desafio2.entities.Transacao;
 import br.com.dock.desafio2.repositories.ContaRepository;
 import br.com.dock.desafio2.repositories.PessoaRepository;
 import br.com.dock.desafio2.repositories.TransacaoRepository;
+import br.com.dock.desafio2.services.exceptions.BlockedAccountException;
 import br.com.dock.desafio2.services.exceptions.EntityNotFoundException;
 import br.com.dock.desafio2.services.exceptions.WithdrawNotAllowedException;
 
@@ -33,12 +34,14 @@ public class ContaService {
 	@Autowired
 	private TransacaoRepository transacaoRepository;
 	
+	@Transactional(readOnly = true)
 	public ContaDTO buscar(Long id) {
 		Optional<Conta> obj = contaRepository.findById(id);
 		Conta conta = obj.orElseThrow(() -> new EntityNotFoundException("Conta não encontrada!"));
 		return new ContaDTO(conta);
 	}
 
+	@Transactional(readOnly = true)
 	public List<Conta> findAll() {
 		return contaRepository.findAll();
 	}
@@ -63,8 +66,13 @@ public class ContaService {
 	}
 	
 	public ContaDTO depositar(Long id, ValorDTO dto) {
-		Optional<Conta> obj = contaRepository.findById(id);
-		Conta conta = obj.orElseThrow(() -> new EntityNotFoundException("Conta não encontrada!"));
+		
+		Conta conta = new Conta(this.buscar(id));
+		
+		if(!conta.getFlagAtivo()) {
+			throw new BlockedAccountException("A conta está bloqueada");
+		}
+		
 		BigDecimal novoSaldo = conta.getSaldo().add(dto.getValor());
 		conta.setSaldo(novoSaldo);
 		conta = contaRepository.save(conta);
@@ -77,8 +85,12 @@ public class ContaService {
 	}
 	
 	public BigDecimal consultarSaldo(Long id) {
-		Optional<Conta> obj = contaRepository.findById(id);
-		Conta conta = obj.orElseThrow(() -> new EntityNotFoundException("Conta não encontrada!"));
+		Conta conta = new Conta(this.buscar(id));
+		
+		if(!conta.getFlagAtivo()) {
+			throw new BlockedAccountException("A conta está bloqueada");
+		}
+		
 		Transacao consulta = new Transacao(null, conta, new BigDecimal(0.00), new Date(), "Consulta");
 		transacaoRepository.save(consulta);
 		
@@ -87,8 +99,12 @@ public class ContaService {
 	
 	@Transactional
 	public ContaDTO sacar(Long id, ValorDTO dto) {
-		Optional<Conta> obj = contaRepository.findById(id);
-		Conta conta = obj.orElseThrow(() -> new EntityNotFoundException("Conta não encontrada!"));
+		
+		Conta conta = new Conta(this.buscar(id));
+		
+		if(!conta.getFlagAtivo()) {
+			throw new BlockedAccountException("A conta está bloqueada");
+		}
 		
 		if(conta.getSaldo().compareTo(dto.getValor()) == -1 ) {
 			throw new WithdrawNotAllowedException("Saldo insuficiente");
@@ -104,21 +120,44 @@ public class ContaService {
 		return new ContaDTO(conta);
 	}
 	
+	@Transactional
 	public ContaDTO bloquearConta(Long id) {
-		Optional<Conta> obj = contaRepository.findById(id);
-		Conta conta = obj.orElseThrow(() -> new EntityNotFoundException("Conta não encontrada!"));
+		
+		Conta conta = new Conta(this.buscar(id));
+		
+		if(!conta.getFlagAtivo()) {
+			throw new BlockedAccountException("A conta já está bloqueada");
+		}
+		
 		conta.setFlagAtivo(false);
+		contaRepository.save(conta);
+		
 		return new ContaDTO(conta);
 	}
 	
+	@Transactional
 	public ContaDTO desbloquearConta(Long id) {
-		Optional<Conta> obj = contaRepository.findById(id);
-		Conta conta = obj.orElseThrow(() -> new EntityNotFoundException("Conta não encontrada!"));
+		
+		Conta conta = new Conta(this.buscar(id));
+		
+		if(conta.getFlagAtivo()) {
+			throw new BlockedAccountException("A conta já está desbloqueada");
+		}
+		
 		conta.setFlagAtivo(true);
+		contaRepository.save(conta);
+		
 		return new ContaDTO(conta);
 	}
 	
 	public List<Transacao> buscarTransacoes(Long id) {
+		
+		Conta conta = new Conta(this.buscar(id));
+		
+		if(!conta.getFlagAtivo()) {
+			throw new BlockedAccountException("A conta está bloqueada");
+		}
+		
 		return transacaoRepository.findAll();
 	}
 

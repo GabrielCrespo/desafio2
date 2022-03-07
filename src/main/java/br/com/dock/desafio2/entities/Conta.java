@@ -18,6 +18,7 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import br.com.dock.desafio2.dto.ContaDTO;
 import br.com.dock.desafio2.enums.TipoConta;
 
 @Entity
@@ -63,6 +64,16 @@ public class Conta implements Serializable {
 		this.flagAtivo = flagAtivo;
 		this.tipoConta = tipoConta;
 		this.dataCriacao = dataCriacao;
+	}
+	
+	public Conta(ContaDTO entity) {
+		this.idConta= entity.getId();
+		this.idPessoa = entity.getPessoa();
+		this.saldo = entity.getSaldo();
+		this.limiteSaqueDiario = entity.getLimiteSaqueDiario();
+		this.flagAtivo = entity.getFlagAtivo();
+		this.tipoConta = entity.getTipoConta();
+		this.dataCriacao = entity.getDataCriacao();
 	}
 
 	public Long getIdConta() {
