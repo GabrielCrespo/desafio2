@@ -19,7 +19,6 @@ public class ContaDTO implements Serializable {
 	private Boolean flagAtivo;
 	private TipoConta tipoConta;
 	private Date dataCriacao;
-	//private List<Transacao> transacoes = new ArrayList<Transacao>();
 	
 	public ContaDTO() {
 		
@@ -46,10 +45,6 @@ public class ContaDTO implements Serializable {
 		this.dataCriacao = entity.getDataCriacao();
 	}
 	
-//	public ContaDTO(Conta entity, List<Transacao> transacoes ) {
-//		this(entity);
-//		transacoes.forEach(t -> this.transacoes.add(new Transacao()));
-//	}
 
 	public Long getId() {
 		return id;

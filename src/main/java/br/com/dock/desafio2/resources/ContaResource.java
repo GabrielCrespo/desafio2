@@ -20,6 +20,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import br.com.dock.desafio2.dto.ContaDTO;
 import br.com.dock.desafio2.dto.ValorDTO;
 import br.com.dock.desafio2.entities.Conta;
+import br.com.dock.desafio2.entities.Transacao;
 import br.com.dock.desafio2.services.ContaService;
 
 @RestController
@@ -28,6 +29,11 @@ public class ContaResource {
 	
 	@Autowired
 	private ContaService service;
+	
+	@GetMapping(value = "/buscar-conta/{id}")
+	public ResponseEntity<ContaDTO> buscar(@PathVariable long id) {
+		return ResponseEntity.ok().body(service.buscar(id));
+	}
 	
 	@GetMapping
 	public ResponseEntity<List<Conta>> findAll(){
@@ -65,6 +71,12 @@ public class ContaResource {
 	public ResponseEntity<ContaDTO> bloquear(@PathVariable Long id) {
 		ContaDTO contaDto = service.bloquearConta(id);
 		return ResponseEntity.ok().body(contaDto);
+	}
+	
+	@GetMapping(value = "/consultar-transacoes/{id}")
+	public ResponseEntity<List<Transacao>> BuscarTransacoes(@PathVariable Long id){
+		List<Transacao> transacoes = service.buscarTransacoes(id);
+		return ResponseEntity.ok().body(transacoes);
 	}
 	
 	

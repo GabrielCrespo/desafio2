@@ -7,14 +7,15 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import br.com.dock.desafio2.dto.ContaDTO;
 import br.com.dock.desafio2.dto.ValorDTO;
 import br.com.dock.desafio2.entities.Conta;
 import br.com.dock.desafio2.entities.Pessoa;
+import br.com.dock.desafio2.entities.Transacao;
 import br.com.dock.desafio2.repositories.ContaRepository;
 import br.com.dock.desafio2.repositories.PessoaRepository;
+import br.com.dock.desafio2.repositories.TransacaoRepository;
 import br.com.dock.desafio2.services.exceptions.EntityNotFoundException;
 
 @Service
@@ -25,6 +26,15 @@ public class ContaService {
 
 	@Autowired
 	private PessoaRepository pessoaRepository;
+	
+	@Autowired
+	private TransacaoRepository transacaoRepository;
+	
+	public ContaDTO buscar(Long id) {
+		Optional<Conta> obj = contaRepository.findById(id);
+		Conta conta = obj.orElseThrow(() -> new EntityNotFoundException("Conta não encontrada!"));
+		return new ContaDTO(conta);
+	}
 
 	public List<Conta> findAll() {
 		return contaRepository.findAll();
@@ -55,14 +65,20 @@ public class ContaService {
 		BigDecimal novoSaldo = conta.getSaldo().add(dto.getValor());
 		conta.setSaldo(novoSaldo);
 		conta = contaRepository.save(conta);
+		
+		Transacao deposito = new Transacao(null, conta, dto.getValor(), new Date(), "Depósito");
+		transacaoRepository.save(deposito);
+		
 		return new ContaDTO(conta);
 		
 	}
 	
-	@Transactional(readOnly = true)
 	public BigDecimal consultarSaldo(Long id) {
 		Optional<Conta> obj = contaRepository.findById(id);
 		Conta conta = obj.orElseThrow(() -> new EntityNotFoundException("Conta não encontrada!"));
+		Transacao consulta = new Transacao(null, conta, new BigDecimal(0.00), new Date(), "Consulta");
+		transacaoRepository.save(consulta);
+		
 		return conta.getSaldo();
 	}
 	
@@ -72,6 +88,10 @@ public class ContaService {
 		BigDecimal novoSaldo = conta.getSaldo().subtract(dto.getValor());
 		conta.setSaldo(novoSaldo);
 		conta = contaRepository.save(conta);
+		
+		Transacao deposito = new Transacao(null, conta, dto.getValor(), new Date(), "Saque");
+		transacaoRepository.save(deposito);
+		
 		return new ContaDTO(conta);
 	}
 	
@@ -87,6 +107,10 @@ public class ContaService {
 		Conta conta = obj.orElseThrow(() -> new EntityNotFoundException("Conta não encontrada!"));
 		conta.setFlagAtivo(true);
 		return new ContaDTO(conta);
+	}
+	
+	public List<Transacao> buscarTransacoes(Long id) {
+		return transacaoRepository.findAll();
 	}
 
 }

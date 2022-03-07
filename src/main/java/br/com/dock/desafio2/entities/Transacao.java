@@ -12,6 +12,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "transacoes")
 public class Transacao {
@@ -20,6 +22,7 @@ public class Transacao {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long idTransacao;
 	
+	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name = "idConta", referencedColumnName = "idConta")
 	private Conta conta;
@@ -29,14 +32,17 @@ public class Transacao {
 	
 	private Date data;
 	
+	private String descricao;
+	
 	public Transacao() {
 	}
 
-	public Transacao(Long idTransacao, Conta conta, BigDecimal valor, Date data) {
+	public Transacao(Long idTransacao, Conta conta, BigDecimal valor, Date data, String descricao) {
 		this.idTransacao = idTransacao;
 		this.conta = conta;
 		this.valor = valor;
 		this.data = data;
+		this.descricao = descricao;
 	}
 
 	public Long getIdTransacao() {
@@ -65,6 +71,20 @@ public class Transacao {
 
 	public void setData(Date data) {
 		this.data = data;
+	}
+
+	public String getDescricao() {
+		return descricao;
+	}
+
+	public void setDescricao(String descricao) {
+		this.descricao = descricao;
+	}
+
+	@Override
+	public String toString() {
+		return "Transacao [idTransacao=" + idTransacao + ", conta=" + conta + ", valor=" + valor + ", data=" + data
+				+ "]";
 	}
 	
 }
