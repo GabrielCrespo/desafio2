@@ -2,13 +2,11 @@ package br.com.dock.desafio2.resources;
 
 import java.math.BigDecimal;
 import java.net.URI;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,14 +14,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.com.dock.desafio2.dto.ContaDTO;
 import br.com.dock.desafio2.dto.ValorDTO;
-import br.com.dock.desafio2.entities.Conta;
-import br.com.dock.desafio2.entities.Transacao;
 import br.com.dock.desafio2.services.ContaService;
 
 @RestController
@@ -39,8 +34,8 @@ public class ContaResource {
 	}
 
 	@GetMapping
-	public ResponseEntity<List<Conta>> findAll() {
-		List<Conta> contas = service.findAll();
+	public ResponseEntity<List<ContaDTO>> findAll() {
+		List<ContaDTO> contas = service.buscarTodos();
 		return ResponseEntity.ok().body(contas);
 	}
 
@@ -82,18 +77,5 @@ public class ContaResource {
 		return ResponseEntity.ok().body(contaDto);
 	}
 
-	@GetMapping(value = "/consultar-transacoes/{id}")
-	public ResponseEntity<List<Transacao>> BuscarTransacoes(@PathVariable Long id) {
-		List<Transacao> transacoes = service.buscarTransacoes(id);
-		return ResponseEntity.ok().body(transacoes);
-	}
-
-	@GetMapping(value = "/consultar-transacoes-por-periodo/{id}")
-	public ResponseEntity<List<Transacao>> BuscarTransacoesPorPeriod(@PathVariable Long id,
-			@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date start,
-			@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date end) {
-		List<Transacao> transacoes = service.buscarTransacoesPorPeriodo(id, start, end);
-		return ResponseEntity.ok().body(transacoes);
-	}
 
 }

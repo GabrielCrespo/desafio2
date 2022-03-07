@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import br.com.dock.desafio2.services.exceptions.AccountTypeNotFound;
 import br.com.dock.desafio2.services.exceptions.BlockedAccountException;
 import br.com.dock.desafio2.services.exceptions.EntityNotFoundException;
 import br.com.dock.desafio2.services.exceptions.WithdrawNotAllowedException;
@@ -47,6 +48,17 @@ public class ResourceExceptionHandler {
 		err.setMessage(e.getMessage());
 		err.setPath(request.getRequestURI());
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
+	}
+	
+	@ExceptionHandler(AccountTypeNotFound.class)
+	public ResponseEntity<StandardError> accountTypeNotFound(AccountTypeNotFound e, HttpServletRequest request) {
+		StandardError err = new StandardError();
+		err.setTimestamp(Instant.now());
+		err.setStatus(HttpStatus.NOT_FOUND.value());
+		err.setError("Resource not found");
+		err.setMessage(e.getMessage());
+		err.setPath(request.getRequestURI());
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(err);
 	}
 
 }
