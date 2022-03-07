@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +19,7 @@ import br.com.dock.desafio2.repositories.ContaRepository;
 import br.com.dock.desafio2.repositories.PessoaRepository;
 import br.com.dock.desafio2.repositories.TransacaoRepository;
 import br.com.dock.desafio2.services.exceptions.EntityNotFoundException;
+import br.com.dock.desafio2.services.exceptions.WithdrawNotAllowedException;
 
 @Service
 public class ContaService {
@@ -82,9 +85,15 @@ public class ContaService {
 		return conta.getSaldo();
 	}
 	
+	@Transactional
 	public ContaDTO sacar(Long id, ValorDTO dto) {
 		Optional<Conta> obj = contaRepository.findById(id);
 		Conta conta = obj.orElseThrow(() -> new EntityNotFoundException("Conta não encontrada!"));
+		
+		if(conta.getSaldo().compareTo(dto.getValor()) == -1 ) {
+			throw new WithdrawNotAllowedException("Saldo insuficiente");
+		}
+		
 		BigDecimal novoSaldo = conta.getSaldo().subtract(dto.getValor());
 		conta.setSaldo(novoSaldo);
 		conta = contaRepository.save(conta);
