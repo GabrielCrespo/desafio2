@@ -2,14 +2,14 @@ package br.com.dock.desafio2.dto;
 
 import java.math.BigDecimal;
 
-public class DepositoDTO {
+public class ValorDTO {
 
 	private BigDecimal valor;
 	
-	public DepositoDTO() {
+	public ValorDTO() {
 	}
 
-	public DepositoDTO(BigDecimal valor) {
+	public ValorDTO(BigDecimal valor) {
 		this.valor = valor;
 	}
 

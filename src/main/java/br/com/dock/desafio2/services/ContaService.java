@@ -3,16 +3,19 @@ package br.com.dock.desafio2.services;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import br.com.dock.desafio2.dto.ContaDTO;
-import br.com.dock.desafio2.dto.DepositoDTO;
+import br.com.dock.desafio2.dto.ValorDTO;
 import br.com.dock.desafio2.entities.Conta;
 import br.com.dock.desafio2.entities.Pessoa;
 import br.com.dock.desafio2.repositories.ContaRepository;
 import br.com.dock.desafio2.repositories.PessoaRepository;
+import br.com.dock.desafio2.services.exceptions.EntityNotFoundException;
 
 @Service
 public class ContaService {
@@ -45,8 +48,9 @@ public class ContaService {
 
 	}
 	
-	public ContaDTO depositar(Long id, DepositoDTO dto) {
-		Conta conta = contaRepository.findById(id).get();
+	public ContaDTO depositar(Long id, ValorDTO dto) {
+		Optional<Conta> obj = contaRepository.findById(id);
+		Conta conta = obj.orElseThrow(() -> new EntityNotFoundException("Conta não encontrada!"));
 		BigDecimal novoSaldo = conta.getSaldo().add(dto.getValor());
 		conta.setSaldo(novoSaldo);
 		conta = contaRepository.save(conta);
@@ -54,9 +58,34 @@ public class ContaService {
 		
 	}
 	
+	@Transactional(readOnly = true)
 	public BigDecimal consultarSaldo(Long id) {
-		Conta conta = contaRepository.findById(id).get();
+		Optional<Conta> obj = contaRepository.findById(id);
+		Conta conta = obj.orElseThrow(() -> new EntityNotFoundException("Conta não encontrada!"));
 		return conta.getSaldo();
+	}
+	
+	public ContaDTO sacar(Long id, ValorDTO dto) {
+		Optional<Conta> obj = contaRepository.findById(id);
+		Conta conta = obj.orElseThrow(() -> new EntityNotFoundException("Conta não encontrada!"));
+		BigDecimal novoSaldo = conta.getSaldo().subtract(dto.getValor());
+		conta.setSaldo(novoSaldo);
+		conta = contaRepository.save(conta);
+		return new ContaDTO(conta);
+	}
+	
+	public ContaDTO bloquearConta(Long id) {
+		Optional<Conta> obj = contaRepository.findById(id);
+		Conta conta = obj.orElseThrow(() -> new EntityNotFoundException("Conta não encontrada!"));
+		conta.setFlagAtivo(false);
+		return new ContaDTO(conta);
+	}
+	
+	public ContaDTO desbloquearConta(Long id) {
+		Optional<Conta> obj = contaRepository.findById(id);
+		Conta conta = obj.orElseThrow(() -> new EntityNotFoundException("Conta não encontrada!"));
+		conta.setFlagAtivo(true);
+		return new ContaDTO(conta);
 	}
 
 }

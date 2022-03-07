@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.com.dock.desafio2.dto.ContaDTO;
-import br.com.dock.desafio2.dto.DepositoDTO;
+import br.com.dock.desafio2.dto.ValorDTO;
 import br.com.dock.desafio2.entities.Conta;
 import br.com.dock.desafio2.services.ContaService;
 
@@ -35,7 +35,7 @@ public class ContaResource {
 		return ResponseEntity.ok().body(contas);
 	}
 	
-	@GetMapping(value = "/consutar-saldo/{id}")
+	@GetMapping(value = "/consultar-saldo/{id}")
 	public ResponseEntity<Map<String, BigDecimal>> consultarSaldo(@PathVariable Long id) {
 		Map<String, BigDecimal> response = new HashMap<>();
 		response.put("Saldo: ", service.consultarSaldo(id));
@@ -49,9 +49,21 @@ public class ContaResource {
 		return ResponseEntity.created(uri).body(dto);
 	}
 	
-	@PutMapping(value = "/{id}")
-	public ResponseEntity<ContaDTO> depositar(@PathVariable Long id, @RequestBody DepositoDTO dto) {
+	@PutMapping(value = "/depositar/{id}")
+	public ResponseEntity<ContaDTO> depositar(@PathVariable Long id, @RequestBody ValorDTO dto) {
 		ContaDTO contaDto = service.depositar(id, dto);
+		return ResponseEntity.ok().body(contaDto);
+	}
+	
+	@PutMapping(value = "/sacar/{id}")
+	public ResponseEntity<ContaDTO> sacar(@PathVariable Long id, @RequestBody ValorDTO dto) {
+		ContaDTO contaDto = service.sacar(id, dto);
+		return ResponseEntity.ok().body(contaDto);
+	}
+	
+	@PutMapping(value = "/bloquear/{id}")
+	public ResponseEntity<ContaDTO> bloquear(@PathVariable Long id) {
+		ContaDTO contaDto = service.bloquearConta(id);
 		return ResponseEntity.ok().body(contaDto);
 	}
 	
