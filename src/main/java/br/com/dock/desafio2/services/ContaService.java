@@ -160,5 +160,16 @@ public class ContaService {
 		
 		return transacaoRepository.findAll();
 	}
+	
+	public List<Transacao> buscarTransacoesPorPeriodo(Long id, Date start, Date end) {
+		
+		Conta conta = new Conta(this.buscar(id));
+		
+		if(!conta.getFlagAtivo()) {
+			throw new BlockedAccountException("A conta está bloqueada");
+		}
+		
+		return transacaoRepository.findByDataBetween(start, end);
+	}
 
 }
