@@ -48,7 +48,7 @@ public class TransacaoResource {
 	 * 
 	 */
 	@GetMapping(value = "/consultar-transacoes/{id}")
-	@ApiOperation(value = "Consulta transações por conta")
+	@ApiOperation(value = "Consultar transações por conta")
 	public ResponseEntity<List<TransacaoDTO>> BuscarTransacoes(@PathVariable Long id) {
 		List<TransacaoDTO> transacoes = service.buscarTransacoes(id);
 		return ResponseEntity.ok().body(transacoes);
@@ -67,7 +67,7 @@ public class TransacaoResource {
 	 * 
 	 */
 	@GetMapping(value = "/consultar-transacoes-por-periodo/{id}")
-	@ApiOperation(value = "Consulta transações por conta e período")
+	@ApiOperation(value = "Consultar transações por conta e período")
 	public ResponseEntity<List<TransacaoDTO>> BuscarTransacoesPorPeriod(@PathVariable Long id,
 			@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date start,
 			@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date end) {

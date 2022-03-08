@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,6 +21,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import br.com.dock.desafio2.dto.ContaDTO;
 import br.com.dock.desafio2.dto.ValorDTO;
 import br.com.dock.desafio2.services.ContaService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
 
 /**
@@ -33,6 +36,7 @@ import br.com.dock.desafio2.services.ContaService;
 
 @RestController
 @RequestMapping(value = "/contas")
+@Api(value = "API gerenciadora de transações de uma conta", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE, tags = {"Contas"}  )
 public class ContaResource {
 
 	/**
@@ -50,6 +54,7 @@ public class ContaResource {
 	 * 
 	 */
 	@GetMapping(value = "/buscar-conta/{id}")
+	@ApiOperation(value = "Consultar informações de uma conta")
 	public ResponseEntity<ContaDTO> buscar(@PathVariable long id) {
 		return ResponseEntity.ok().body(service.buscar(id));
 	}
@@ -61,7 +66,8 @@ public class ContaResource {
 	 * 
 	 */
 	@GetMapping
-	public ResponseEntity<List<ContaDTO>> findAll() {
+	@ApiOperation(value = "Consultar informações de todas as contas")
+	public ResponseEntity<List<ContaDTO>> buscarTodos() {
 		List<ContaDTO> contas = service.buscarTodos();
 		return ResponseEntity.ok().body(contas);
 	}
@@ -74,6 +80,7 @@ public class ContaResource {
 	 * 
 	 */
 	@GetMapping(value = "/consultar-saldo/{id}")
+	@ApiOperation(value = "Consultar informações de saldo de uma conta")
 	public ResponseEntity<Map<String, BigDecimal>> consultarSaldo(@PathVariable Long id) {
 		Map<String, BigDecimal> response = new HashMap<>();
 		response.put("Saldo: ", service.consultarSaldo(id));
@@ -88,6 +95,7 @@ public class ContaResource {
 	 * 
 	 */
 	@PostMapping
+	@ApiOperation(value = "Criar uma conta", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ContaDTO> create(@RequestBody ContaDTO dto) {
 		dto = service.create(dto);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(dto.getId()).toUri();
@@ -104,6 +112,7 @@ public class ContaResource {
 	 * 
 	 */
 	@PutMapping(value = "/depositar/{id}")
+	@ApiOperation(value = "Realizar depósito em uma conta", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ContaDTO> depositar(@PathVariable Long id, @RequestBody ValorDTO dto) {
 		ContaDTO contaDto = service.depositar(id, dto);
 		return ResponseEntity.ok().body(contaDto);
@@ -119,6 +128,7 @@ public class ContaResource {
 	 * 
 	 */
 	@PutMapping(value = "/sacar/{id}")
+	@ApiOperation(value = "Sacar um valor de uma conta", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ContaDTO> sacar(@PathVariable Long id, @RequestBody ValorDTO dto) {
 		ContaDTO contaDto = service.sacar(id, dto);
 		return ResponseEntity.ok().body(contaDto);
@@ -132,6 +142,7 @@ public class ContaResource {
 	 * 
 	 */
 	@PutMapping(value = "/bloquear/{id}")
+	@ApiOperation(value = "Bloquear uma conta", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ContaDTO> bloquear(@PathVariable Long id) {
 		ContaDTO contaDto = service.bloquearConta(id);
 		return ResponseEntity.ok().body(contaDto);
@@ -145,6 +156,7 @@ public class ContaResource {
 	 * 
 	 */
 	@PutMapping(value = "/desbloquear/{id}")
+	@ApiOperation(value = "desbloquear uma conta", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ContaDTO> desbloquear(@PathVariable Long id) {
 		ContaDTO contaDto = service.desbloquearConta(id);
 		return ResponseEntity.ok().body(contaDto);
