@@ -1,0 +1,9 @@
+br.com.dock.desafio2
+br.com.dock.desafio2.dto
+br.com.dock.desafio2.entities
+br.com.dock.desafio2.enums
+br.com.dock.desafio2.repositories
+br.com.dock.desafio2.resources
+br.com.dock.desafio2.resources.exceptions
+br.com.dock.desafio2.services
+br.com.dock.desafio2.services.exceptions

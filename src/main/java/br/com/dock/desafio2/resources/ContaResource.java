@@ -21,31 +21,72 @@ import br.com.dock.desafio2.dto.ContaDTO;
 import br.com.dock.desafio2.dto.ValorDTO;
 import br.com.dock.desafio2.services.ContaService;
 
+
+/**
+ * Classe responsável por interceptar e controlar 
+ * o envio de requisições relacionadas ao contexto da classe Conta
+ * 
+ * @author Gabriel Crespo de Souza
+ * @version 1.0
+ *
+ */
+
 @RestController
 @RequestMapping(value = "/contas")
 public class ContaResource {
 
+	/**
+	 *  Dependência da classe serviço de conta injetada com o intuito de 
+	 * 	invocar comunicações com a camada de dados da aplicação
+	 */
 	@Autowired
 	private ContaService service;
 
+	/**
+	 * Método responsável por mapear a rota que buscará os dados de uma conta
+	 * 
+	 * @param id identificador da conta a ser encontrada
+	 * @return uma entidade de resposta com os dados de transferência de uma conta
+	 * 
+	 */
 	@GetMapping(value = "/buscar-conta/{id}")
 	public ResponseEntity<ContaDTO> buscar(@PathVariable long id) {
 		return ResponseEntity.ok().body(service.buscar(id));
 	}
 
+	/**
+	 * Método responsável por mapear a rota que buscará os dados de todas as contas cadastradas
+	 * 
+	 * @return uma entidade de resposta com os dados de transferência de todas as contadas cadastradas
+	 * 
+	 */
 	@GetMapping
 	public ResponseEntity<List<ContaDTO>> findAll() {
 		List<ContaDTO> contas = service.buscarTodos();
 		return ResponseEntity.ok().body(contas);
 	}
 
+	/**
+	 * Método responsável por mapear a rota que buscará o saldo de uma determinada conta
+	 * 
+	 * @param id identificador da conta a ser encontrada para consulta do seu saldo
+	 * @return uma entidade de resposta com o dado de saldo da conta consultada
+	 * 
+	 */
 	@GetMapping(value = "/consultar-saldo/{id}")
 	public ResponseEntity<Map<String, BigDecimal>> consultarSaldo(@PathVariable Long id) {
 		Map<String, BigDecimal> response = new HashMap<>();
 		response.put("Saldo: ", service.consultarSaldo(id));
 		return ResponseEntity.ok().body(response);
 	}
-
+	
+	/**
+	 * Método responsável por mapear a rota irá criar um conta
+	 * 
+	 * @param dto dados de transeferência que serão mapeados para a criação de uma conta
+	 * @return uma entidade de resposta com os dados de transferência da conta criada
+	 * 
+	 */
 	@PostMapping
 	public ResponseEntity<ContaDTO> create(@RequestBody ContaDTO dto) {
 		dto = service.create(dto);
@@ -53,24 +94,56 @@ public class ContaResource {
 		return ResponseEntity.created(uri).body(dto);
 	}
 
+	/**
+	 * Método responsável por mapear a rota que irá depositar um valor monetário 
+	 * a uma determinada conta
+	 * 
+	 * @param id identificador da conta a ser encontrada
+	 * @param dto dados de transferência a serem mapeado do valor a ser depositado na conta
+	 * @return uma entidade de resposta com os dados de transferência de uma conta
+	 * 
+	 */
 	@PutMapping(value = "/depositar/{id}")
 	public ResponseEntity<ContaDTO> depositar(@PathVariable Long id, @RequestBody ValorDTO dto) {
 		ContaDTO contaDto = service.depositar(id, dto);
 		return ResponseEntity.ok().body(contaDto);
 	}
 
+	/**
+	 * Método responsável por mapear a rota que irá sacar um valor monetário 
+	 * de uma determinada conta
+	 * 
+	 * @param id identificador da conta a ser encontrada
+	 * @param dto dados de transferência a serem mapeado do valor a ser sacado da conta
+	 * @return uma entidade de resposta com os dados de transferência de uma conta
+	 * 
+	 */
 	@PutMapping(value = "/sacar/{id}")
 	public ResponseEntity<ContaDTO> sacar(@PathVariable Long id, @RequestBody ValorDTO dto) {
 		ContaDTO contaDto = service.sacar(id, dto);
 		return ResponseEntity.ok().body(contaDto);
 	}
 
+	/**
+	 * Método responsável por mapear a rota que irá bloquear uma conta
+	 * 
+	 * @param id identificador da conta a ser encontrada
+	 * @return uma entidade de resposta com os dados de transferência de uma conta
+	 * 
+	 */
 	@PutMapping(value = "/bloquear/{id}")
 	public ResponseEntity<ContaDTO> bloquear(@PathVariable Long id) {
 		ContaDTO contaDto = service.bloquearConta(id);
 		return ResponseEntity.ok().body(contaDto);
 	}
 
+	/**
+	 * Método responsável por mapear a rota que irá desbloquear uma conta
+	 * 
+	 * @param id identificador da conta a ser encontrada
+	 * @return uma entidade de resposta com os dados de transferência de uma conta
+	 * 
+	 */
 	@PutMapping(value = "/desbloquear/{id}")
 	public ResponseEntity<ContaDTO> desbloquear(@PathVariable Long id) {
 		ContaDTO contaDto = service.desbloquearConta(id);

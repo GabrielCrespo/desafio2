@@ -23,18 +23,50 @@ import br.com.dock.desafio2.services.exceptions.DailyWithdrawLimitException;
 import br.com.dock.desafio2.services.exceptions.EntityNotFoundException;
 import br.com.dock.desafio2.services.exceptions.WithdrawNotAllowedException;
 
+
+/**
+ * Classe responsável por estabelecer todas as regras de 
+ * negócio da aplicação no contexto da entidade Conta 
+ * 
+ * @author Gabriel Crespo de Souza
+ * @version 1.0
+ *
+ */
+
 @Service
 public class ContaService {
 
+	/**
+	 *  Dependência da classe repositório de conta injetada com o intuito de 
+	 * 	invocar comunicações diretas com a entidade Conta na base de dados
+	 */
 	@Autowired
 	private ContaRepository contaRepository;
 
+	/**
+	 *  Dependência da classe repositório de conta injetada com o intuito de 
+	 * 	invocar comunicações diretas com a entidade Pessoa na base de dados
+	 */
 	@Autowired
 	private PessoaRepository pessoaRepository;
 
+	/**
+	 *  Dependência da classe repositório de conta injetada com o intuito de 
+	 * 	invocar comunicações diretas com a entidade Transação na base de dados
+	 */
 	@Autowired
 	private TransacaoRepository transacaoRepository;
 
+
+	/**
+	 * Método responsável por consultar a camada de dados
+	 * em busca da conta solicitada
+	 * 
+	 * @param id identificador da conta a ser encontrada para consulta do seu saldo
+	 * @return uma entidade com os dados de transferência da conta consultada
+	 * @throws EntityNotFoundException se a conta não for encontrada
+	 * 
+	 */
 	@Transactional(readOnly = true)
 	public ContaDTO buscar(Long id) {
 		Optional<Conta> obj = contaRepository.findById(id);
@@ -42,11 +74,29 @@ public class ContaService {
 		return new ContaDTO(conta);
 	}
 
+
+	/**
+	 * Método responsável por consultar a camada de dados
+	 * em busca de todas as contas cadastradas
+	 * 
+	 * @return uma lista com os dados de transferência das contas consultadas
+	 * 
+	 */
 	@Transactional(readOnly = true)
 	public List<ContaDTO> buscarTodos() {
 		return contaRepository.findAll().stream().map((conta) -> new ContaDTO(conta)).collect(Collectors.toList());
 	}
 
+	/**
+	 * Método responsável por invocar a camada de dados
+	 * para a criação de uma conta
+	 * 
+	 * @param dto dados de transeferência necessários para a criação de uma conta
+	 * @return uma entidade com os dados de transferência da conta criada
+	 * @throws EntityNotFoundException se não existir a pessoa vinculada à conta
+	 * 
+	 */
+	@Transactional
 	public ContaDTO create(ContaDTO dto) {
 
 		Optional<Pessoa> obj = pessoaRepository.findById(dto.getPessoa().getIdPessoa());
@@ -66,6 +116,19 @@ public class ContaService {
 
 	}
 
+	/**
+	 * Método responsável por invocar a camada de dados
+	 * para a consulta de uma conta que irá receber o depósito 
+	 * e persistência da transação de depósito
+	 * 
+	 * @param id identificador da conta a ser encontrada para receber o depósito
+	 * @param dto dado de transferência do valor a ser depositado
+	 * @return uma entidade com os dados de transferência da conta depositada
+	 * @throws EntityNotFoundException se não existir a pessoa vinculada à conta
+	 * @throws BlockedAccountException se a conta estiver bloqueada
+	 * 
+	 */
+	@Transactional
 	public ContaDTO depositar(Long id, ValorDTO dto) {
 
 		Conta conta = new Conta(this.buscar(id));
@@ -85,6 +148,18 @@ public class ContaService {
 
 	}
 
+	/**
+	 * Método responsável por invocar a camada de dados
+	 * para a consulta do saldo de uma determinada conta
+	 * e persistência da transação de consulta do saldo
+	 * 
+	 * @param id identificador da conta a ser encontrada para consulta do seu saldo
+	 * @return o valor do saldo atual da conta
+	 * @throws EntityNotFoundException se não existir a pessoa vinculada à conta
+	 * @throws BlockedAccountException se a conta estiver bloqueada
+	 * 
+	 */
+	@Transactional
 	public BigDecimal consultarSaldo(Long id) {
 		Conta conta = new Conta(this.buscar(id));
 
@@ -98,6 +173,20 @@ public class ContaService {
 		return conta.getSaldo();
 	}
 
+	/**
+	 * Método responsável por invocar a camada de dados
+	 * para a consulta de uma conta que irá realizar o saque 
+	 * e persistência da transação de saque
+	 * 
+	 * @param id identificador da conta a ser encontrada para realizar o 
+	 * @param dto dado de transferência do valor a ser sacado
+	 * @return uma entidade com os dados de transferência da conta que realizou o saque
+	 * @throws EntityNotFoundException se não existir a pessoa vinculada à conta
+	 * @throws BlockedAccountException se a conta estiver bloqueada
+	 * @throws WithdrawNotAllowedException se o saldo não for o suficiente
+	 * @throws DailyWithdrawLimitException se o limite de saque diário for excedido
+	 * 
+	 */
 	@Transactional
 	public ContaDTO sacar(Long id, ValorDTO dto) {
 
@@ -125,6 +214,16 @@ public class ContaService {
 		return new ContaDTO(conta);
 	}
 
+	/**
+	 * Método responsável por invocar a camada de dados
+	 * para o bloqueio de uma conta
+	 * 
+	 * @param id identificador da conta a ser encontrada para consulta do seu saldo
+	 * @return uma entidade com os dados de transferência da conta bloqueada
+	 * @throws EntityNotFoundException se não existir a pessoa vinculada à conta
+	 * @throws BlockedAccountException se a conta estiver bloqueada
+	 * 
+	 */
 	@Transactional
 	public ContaDTO bloquearConta(Long id) {
 
@@ -140,6 +239,16 @@ public class ContaService {
 		return new ContaDTO(conta);
 	}
 
+	/**
+	 * Método responsável por invocar a camada de dados
+	 * para o desbloqueio de uma conta
+	 * 
+	 * @param id identificador da conta a ser encontrada para consulta do seu saldo
+	 * @return uma entidade com os dados de transferência da conta desbloqueada
+	 * @throws EntityNotFoundException se não existir a pessoa vinculada à conta
+	 * @throws BlockedAccountException se a conta estiver desbloqueada
+	 * 
+	 */
 	@Transactional
 	public ContaDTO desbloquearConta(Long id) {
 
