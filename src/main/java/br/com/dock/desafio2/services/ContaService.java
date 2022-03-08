@@ -97,8 +97,9 @@ public class ContaService {
 	public EnumMap<TipoConta, Integer> buscarTiposDeConta() {
 		EnumMap<TipoConta, Integer> tipoContaMap = new EnumMap<TipoConta, Integer>(TipoConta.class);
 
-		tipoContaMap.put(TipoConta.CONTA_PF, 0);
-		tipoContaMap.put(TipoConta.CONTA_PJ, 1);
+		tipoContaMap.put(TipoConta.CONTA_CORRENTE, 0);
+		tipoContaMap.put(TipoConta.CONTA_POUPANCA, 1);
+		tipoContaMap.put(TipoConta.CONTA_SALARIO, 2);
 		
 		return tipoContaMap;
 	}

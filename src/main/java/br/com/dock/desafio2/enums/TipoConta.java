@@ -10,10 +10,14 @@ package br.com.dock.desafio2.enums;
  */
 public enum TipoConta {
 	
-	/** Valor que representa a conta de pessoa física  */
-	CONTA_PF,
+	/** Valor que representa a conta-corrente  */
+	CONTA_CORRENTE,
 	
-	/** Valor que representa a conta de pessoa jurídica  */
-	CONTA_PJ
+	/** Valor que representa a conta de poupança  */
+	CONTA_POUPANCA, 
+	
+	/** Valor que representa a conta conta-salário  */
+	CONTA_SALARIO,
+	
 
 }
