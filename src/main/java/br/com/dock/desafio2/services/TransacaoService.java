@@ -2,6 +2,7 @@ package br.com.dock.desafio2.services;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import br.com.dock.desafio2.entities.Conta;
 import br.com.dock.desafio2.repositories.ContaRepository;
 import br.com.dock.desafio2.repositories.TransacaoRepository;
 import br.com.dock.desafio2.services.exceptions.BlockedAccountException;
+import br.com.dock.desafio2.services.exceptions.EntityNotFoundException;
 
 
 /**
@@ -52,7 +54,8 @@ public class TransacaoService {
 	 */
 	public List<TransacaoDTO> buscarTransacoes(Long id) {
 
-		Conta conta = contaRepository.findById(id).get();
+		Optional<Conta> obj = contaRepository.findById(id);
+		Conta conta = obj.orElseThrow(() -> new EntityNotFoundException("Conta não encontrada!"));
 
 		if (!conta.getFlagAtivo()) {
 			throw new BlockedAccountException("A conta está bloqueada");
@@ -75,8 +78,9 @@ public class TransacaoService {
 	 * 
 	 */
 	public List<TransacaoDTO> buscarTransacoesPorPeriodo(Long id, Date start, Date end) {
-
-		Conta conta = contaRepository.findById(id).get();
+	
+		Optional<Conta> obj = contaRepository.findById(id);
+		Conta conta = obj.orElseThrow(() -> new EntityNotFoundException("Conta não encontrada!"));
 
 		if (!conta.getFlagAtivo()) {
 			throw new BlockedAccountException("A conta está bloqueada");
