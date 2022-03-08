@@ -2,6 +2,7 @@ package br.com.dock.desafio2;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 /**
  * Classe responsável pelo início da aplicação SpringBoot
@@ -11,6 +12,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  *
  */
 
+@EnableWebMvc
 @SpringBootApplication
 public class Desafio2Application {
 

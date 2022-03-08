@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.dock.desafio2.dto.TransacaoDTO;
 import br.com.dock.desafio2.services.TransacaoService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
 /**
  * Classe responsável por interceptar e controlar 
@@ -25,6 +28,7 @@ import br.com.dock.desafio2.services.TransacaoService;
  */
 @RestController
 @RequestMapping(value = "/transacao")
+@Api(value = "API gerenciadora de transações de uma conta", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE, tags = {"Transação"}  )
 public class TransacaoResource {
 	
 	/**
@@ -44,6 +48,7 @@ public class TransacaoResource {
 	 * 
 	 */
 	@GetMapping(value = "/consultar-transacoes/{id}")
+	@ApiOperation(value = "Consulta transações por conta")
 	public ResponseEntity<List<TransacaoDTO>> BuscarTransacoes(@PathVariable Long id) {
 		List<TransacaoDTO> transacoes = service.buscarTransacoes(id);
 		return ResponseEntity.ok().body(transacoes);
@@ -62,6 +67,7 @@ public class TransacaoResource {
 	 * 
 	 */
 	@GetMapping(value = "/consultar-transacoes-por-periodo/{id}")
+	@ApiOperation(value = "Consulta transações por conta e período")
 	public ResponseEntity<List<TransacaoDTO>> BuscarTransacoesPorPeriod(@PathVariable Long id,
 			@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date start,
 			@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date end) {
