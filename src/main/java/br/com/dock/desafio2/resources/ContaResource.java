@@ -2,6 +2,7 @@ package br.com.dock.desafio2.resources;
 
 import java.math.BigDecimal;
 import java.net.URI;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +21,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.com.dock.desafio2.dto.ContaDTO;
 import br.com.dock.desafio2.dto.ValorDTO;
+import br.com.dock.desafio2.enums.TipoConta;
 import br.com.dock.desafio2.services.ContaService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -70,6 +72,18 @@ public class ContaResource {
 	public ResponseEntity<List<ContaDTO>> buscarTodos() {
 		List<ContaDTO> contas = service.buscarTodos();
 		return ResponseEntity.ok().body(contas);
+	}
+	
+	/**
+	 * Método responsável por mapear a rota que buscará os tipos de contas existentes
+	 * 
+	 * @return uma entidade de resposta com os dados dos tipos de contas existentes
+	 * 
+	 */
+	@GetMapping(value = "/buscar-tipos-conta")
+	@ApiOperation(value = "Consultar tipos de conta")
+	public ResponseEntity<EnumMap<TipoConta, Integer>> buscarTiposDeConta() {
+		return ResponseEntity.ok().body(service.buscarTiposDeConta());
 	}
 
 	/**
