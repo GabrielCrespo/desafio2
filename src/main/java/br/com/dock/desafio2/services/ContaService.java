@@ -214,7 +214,7 @@ public class ContaService {
 			throw new WithdrawNotAllowedException("Saldo insuficiente");
 		}
 
-		if (conta.getSaldo().compareTo(dto.getValor()) == 1) {
+		if (conta.getLimiteSaqueDiario().compareTo(dto.getValor()) == -1) {
 			throw new DailyWithdrawLimitException("Não é possível sacar mais do que o limite diário permitido");
 		}
 
