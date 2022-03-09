@@ -1,78 +1,45 @@
+## Desafio Dock Tech de Seleção
 
-### Desafio Dock Tech de Seleção 
-Olá, queremos convidá-lo a participar de nosso desafio de seleção.  Pronto para participar? Seu trabalho será visto por nosso time e você receberá ao final um feedback sobre o que achamos do seu trabalho. Não é legal?
+### Instruções para a execução do projeto
 
-### Sobre a oportunidade 
-A vaga é para software engineer, temos vagas com diversos níveis de senioridade e para cada um deles utilizaremos critérios específicos considerando esse aspecto, combinado? 
-Se você for aprovado nesta etapa, será convidado para uma entrevista final com nosso time de especialistas.
+O projeto foi desenvolvido utilizando as seguintes tecnologias:
 
-### Desafio Técnico
-  Nós trabalhamos com meios de pagamento e nada melhor que um bom sistema para gestão de contas:
-  
-  - Pré-requisitos:
-    ```
-    * Desenvolver os recursos em API Rest que realizam operações bancárias com a entidade conta a seguir:
-    ```
-    | Contas | Tipo |
-    |-|-|
-    | idConta | Numérico |
-    | idPessoa | Numérico |
-    | saldo | Monetário |
-    | limiteSaqueDiario | Monetário |
-    | flagAtivo | Condicional |
-    | tipoConta | Numérido |
-    | dataCriacao | Data |
+- **Java 11**
+- **Maven**
+- **Spring Boot**
+- **Docker**
+- **PostgreSQL**
 
-    ```
-    * Tabela de transações realizadas na conta
-    ```
-    | Transacoes | Tipo |
-    |-|-|
-    | idTransacao | Numérico |
-    | idConta | Numérico |
-    | valor | Monetário |
-    | dataTransacao | Data |
+Para facilitar o processo de desenvolvimento, a ferramenta **Docker** foi utilizada para ajudar na construção do ambiente.
+Portanto, podemos iniciar a execução da aplicação, executando o seguinte comando a partir da linha de comando:
 
-    ```
-    * P.S.: Não é necessário realizar operações com a tabela pessoa, mas é necessária a criação da tabela para mapeamento da relação com a conta e enviar script de criação de pelo menos uma pessoa.
-    ```
+- **docker-compose up -d**
 
-    | Pessoas | Tipo |
-    |-|-|
-    | idPessoa | Numérico |
-    | nome | Texto |
-    | cpf | Texto |
-    | dataNascimento | Data |    
+Após sua execução, nós teremos de pé dois containers:
 
-  - O que esperamos como escopo mínimo:
-    ```
-    * Implementar path que realiza a criação de uma conta;
-    * Implementar path que realiza operação de depósito em uma conta;
-    * Implementar path que realiza operação de consulta de saldo em determinada conta;
-    * Implementar path que realiza operação de saque em uma conta;
-    * Implementar path que realiza o bloqueio de uma conta;
-    * Implementar path que recupera o extrato de transações de uma conta;
-    ```
-  - O que será diferencial:
-    ```
-    * Implementar extrato por período;
-    * Elaborar manual de execução;
-    * Elaborar documentação javadoc;
-    * Elaborar testes;
-    * Prazo de entrega;
-    ```
-    
-  - O que vamos avaliar:
-    ```
-    * Seu código; 
-    * Script de banco;
-    * Organização;
-    * Boas práticas;
-    * Diferenciais;    
-    ```
+1. springboot-postgresql - container que contém a aplicação em execução.
+2. postgresql - container que contém o banco de dados da aplicação em execução.
 
+Obs.: nesse caso não serão executados os testes implementados.
 
-### Instruções
-      1. Faça o fork do desafio;
-      2. Desenvolva. Você terá até 7 (sete) dias a partir da data do envio do desafio; 
-      3. Envie um e-mail para arthur.azevedo@dock.tech notificando a finalização do desafio e o link do repositório para validação.
+### Instruções para a execução dos testes
+
+Caso queira analisar a execução dos testes, basta executar o seguinte comando a partir da linha de comando:
+
+- **mvn clean package**
+
+e depois executar o comando do docker compose descrito acima para executar a aplicação.
+
+### Documentação
+
+A aplicação utiliza o **Swagger** como forma de documentação, além do **Javadoc**.
+Portanto, após subir a aplicação, será disponibilizada a seguinte url para uso da aplicação:
+
+- **http://localhost:8080/swagger-ui/index.html#/**
+
+Nessa interface será possível usar os recursos de Contas e Transações.
+
+### Script de banco de dados
+
+Ao iniciar a aplicação, a base de dados será totalmente semeada com informações para ajudar no uso da aplicação.
+A base de dados será automaticamente criada pelo **Docker**.
